@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://cc3xj2oqfyxui"]
+
+[ext_resource type="PackedScene" uid="uid://cenalcopsuvfe" path="res://objects/graph_node.tscn" id="1_24lry"]
+[ext_resource type="Script" uid="uid://dh4iwsiw0ve1u" path="res://scripts/graph_handler.gd" id="1_nymbf"]
+
+[node name="GraphHandler" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nymbf")
+node_instance = ExtResource("1_24lry")
