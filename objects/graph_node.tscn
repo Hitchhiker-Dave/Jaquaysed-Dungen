@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://cenalcopsuvfe"]
+[gd_scene load_steps=5 format=3 uid="uid://cenalcopsuvfe"]
 
 [ext_resource type="Script" uid="uid://caatrpojs5eg7" path="res://scripts/graph_node.gd" id="1_i7hlm"]
 
@@ -10,6 +10,8 @@ colors = PackedColorArray(1, 1, 1, 1, 0.896104, 0.896104, 0.896104, 1, 0, 0, 0, 
 gradient = SubResource("Gradient_hmnnv")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4dben"]
 
 [node name="GraphNode" type="Control"]
 layout_mode = 3
@@ -23,3 +25,10 @@ offset_bottom = 23.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("GradientTexture2D_i7hlm")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="collider" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_4dben")
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]

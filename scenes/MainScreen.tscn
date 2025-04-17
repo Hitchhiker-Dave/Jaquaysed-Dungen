@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dgqjqol5b7rd1"]
+
+[ext_resource type="PackedScene" uid="uid://cc3xj2oqfyxui" path="res://objects/graph_handler.tscn" id="1_j6ixq"]
+[ext_resource type="Script" uid="uid://dl2ux2vs3btvs" path="res://scripts/main_screen.gd" id="1_ton5t"]
+
+[node name="MainScreen" type="Node2D"]
+script = ExtResource("1_ton5t")
+roomCount = 31
+
+[node name="GraphHandler" parent="." instance=ExtResource("1_j6ixq")]
+metadata/_edit_use_anchors_ = true
