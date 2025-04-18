@@ -18,22 +18,49 @@ func _ready() -> void:
 
 #add new node to random position in scene; look up that Rogue-like Talk about RNG- the one where they
 #talk about splitting the screen into distributed chunks before placing rooms
-func addNode() -> void:
+func addNode(x : float, y : float) -> void:
 	var newNode : MyGraphNode = node_instance.instantiate()
 	add_child(newNode)
 	newNode.setRadius(nodeRadius)
-	newNode.global_position.x = randf_range((newNode.radius * 2), 
-		(map_width - (newNode.radius * 2)-  1))
-	newNode.global_position.y = randf_range((newNode.radius * 2), 
-		(map_height - (newNode.radius * 2) - 1))
+	newNode.global_position.x = x
+	newNode.global_position.y = y
 	nodes.push_back(newNode)
-	#logic for if a node is too close to another node
 	return
 
-#initialize n nodes in nodeCount
-func generateNodes() -> void:
+##place nodeCount nodes onto screen
+func generateNodes(coords : Array, width : float, height : float) -> void:
+	print("Generating New Nodes")
+	var x : float = 0
+	var y : float = 0
+	var padding : float = nodeRadius * 2
 	for i in nodeCount:
-		addNode()
+		print("Coords[", i, "]: ", coords[i])
+		'''x = randf_range((coords[i][0] * width) + (width/3), 
+			(coords[i][0] * width) + (width * (2/3)))
+		y = randf_range((coords[i][1] * height), 
+		(coords[i][1] * height) + height)'''
+		x = coords[i][0] * (width) + padding
+		y = coords[i][1] * (height) + padding
+		addNode(x, y)
+	return
+
+#psuedo BSP-> do math to generate a list of n x n coords, then use a rand coord *
+#the sub grid's dimensions (x = padding + screen_x / n, y = padding + screen_y / n) to get a valid 
+#range for placing a node. make sure to pop the used coords to prevent potential overlap 
+func newMap() -> void:
+	#var declaration
+	var grid_coords : Array = []
+	var grid_width : float = map_width / nodeCount
+	var grid_height : float = map_height / nodeCount
+	
+	#initialize valid grid coords
+	for y in range(nodeCount):
+		for x in range(nodeCount):
+			grid_coords.append([x, y])
+	
+	grid_coords.shuffle()
+	generateNodes(grid_coords, grid_width, grid_height)
+	
 	return
 
 #delete all stored nodes in graph

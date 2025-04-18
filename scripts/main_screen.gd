@@ -8,18 +8,18 @@ extends Node2D
 
 #var declaration
 @export var roomCount : int = 10 ##number of rooms generated, max 100
-@onready var radius : float = maxf(10.0, minf(map_div_width, map_div_height) * (0.5 / roomCount))
+@onready var radius : float = maxf(4.0, minf(map_div_width, map_div_height) / (roomCount * 2))
 
 func _ready() -> void:
 	graph_handler.nodeCount = mini(roomCount, 100)
 	graph_handler.map_width = map_div_width
 	graph_handler.map_height = map_div_height
 	graph_handler.nodeRadius = radius
-	graph_handler.generateNodes()
+	graph_handler.newMap()
 	return
 
 func _process(_delta: float) -> void:
 	if(Input.is_action_just_pressed("new_map")):
 		graph_handler.deleteNodes()
-		graph_handler.generateNodes()
+		graph_handler.newMap()
 	return
