@@ -8,12 +8,11 @@ class_name MyGraphNode
 #var declaration
 @onready var neighbors : Array = []
 @onready var value : int = 0
-@onready var radius : float = 4.0
+@onready var radius : float = 1.0
 #either list of bools or enums for special rooms 
 
 func _ready() -> void:
-	sprite_2d.texture.width = radius
-	sprite_2d.texture.height = radius
+	setRadius(radius)
 	value = randi_range(1, 6) #temp values, emulated d6
 
 func setRadius(r : float) -> void:
