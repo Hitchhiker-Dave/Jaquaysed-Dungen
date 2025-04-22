@@ -9,7 +9,8 @@ var visibleEdges : Array = []
 @onready var nodeCount : int = 10
 @onready var map_width : float 
 @onready var map_height : float
-@onready var nodeRadius : float = 4.0
+@onready var nodeRadius : float = 10.0
+@onready var minRadius : float = 8.0
 
 #object declaration
 @export var node_instance : PackedScene
@@ -55,6 +56,7 @@ func newMap() -> void:
 	var grid_coords : Array = []
 	var grid_width : float = map_width / nodeCount
 	var grid_height : float = map_height / nodeCount
+	nodeRadius = maxf(minRadius, minf(map_width, map_height) / (nodeCount * 2))
 	
 	#initialize valid grid coords
 	for y in range(nodeCount):
@@ -64,19 +66,45 @@ func newMap() -> void:
 	grid_coords.shuffle()
 	#Place nodes via pseudo BSP
 	generateNodes(grid_coords, grid_width, grid_height)
-	printNodes()
+	#printNodes()
 	
 	#Delaunay triangulation
 	var del_grid : Array = triangulate()
 	del_grid.sort()
-	drawEdges(del_grid)
 
-	#MST
-	#Set Start, Goal, & Encounter Nodes
-	#Add Edges
+	#Find MST
+	var map_paths : Array = createMST(del_grid)
+	
+	#Set Start, Goal, & Encounter Nodeson Files\Oracle\Java\javapath\javac.exe
+	
+	
+	#Find remaining edges in del_grid
+	map_paths = addExtraEdges(map_paths, del_grid)
+	
 	#Set Treasure Nodes
+	
+	
 	#Start Graph Re-write
+	
+	#update screen
+	drawEdges(map_paths)
 	return
+
+func addExtraEdges(map_array : Array, possible_edges : Array) -> Array:
+	#Find remaining edges in del_grid
+	var remaining_edges : Array = possible_edges.duplicate(true)
+	for edge : Array in possible_edges:
+		if(edge[0] in map_array):
+			remaining_edges.erase(edge)
+	
+	#Add floor( 2(room - 1) / 3) Extra Edges
+	var extra : int = ceili( ((nodeCount * 2.0) / 3.0))
+	
+	for i in range(remaining_edges.size() - 1, 0, -1):
+		if extra <= 0: break
+		map_array.append(remaining_edges[i][0])
+		extra -= 1
+	return map_array
 
 ##Delaunay triangulation via converting nodes list into format usable by godot's
 ##built in delaunay triangulation function; returns list of edges from a
@@ -120,6 +148,54 @@ func triangulate() -> Array:
 	
 	return edges
 
+##Form an MST through a variation of Kruskal's algorithm:
+##https://en.wikipedia.org/wiki/Kruskal%27s_algorithm 
+func createMST(edges : Array) -> Array:
+	var mst : Array = []
+	var maxEdges : int = nodeCount - 1
+	var A : MyGraphNode
+	var B : MyGraphNode
+	
+	##iterate through sorted edge list
+	for edge : Array in edges:
+		#early return if the max possible edges has been reached
+		if(mst.size() >= maxEdges): return mst
+		A = edge[0][0]
+		B = edge[0][1]
+		
+		#check if adding current edge won't cause a cycle
+		if(self.doBFS(A, B) == false): 
+			mst.append(edge[0]) #append edge to MST list
+			#update node neighbors/adj lists
+			A.addNeighbor(B)
+			B.addNeighbor(A)
+	
+	return mst
+
+##Perform a BFS using the starting node's adjencies list. Returns true
+##if path to target node was found, and false otherwise 
+func doBFS(start : MyGraphNode, target : MyGraphNode) -> bool:
+	var queue : Array = [] #queue of nodes to search through
+	#initialize array of bools
+	var visited : Array = []
+	for i in range(nodeCount):
+		visited.append(false)
+	
+	queue.append(start)
+	visited[nodes.find(start)] = true
+	
+	#iteratte through verts
+	var current : MyGraphNode
+	while(queue.size() > 0):
+		current = queue.pop_front() #get new node from queue
+		if(current == target): return true #check if it's the target
+		for adj : MyGraphNode in current.getNeighbors(): #if not, add adj to queue
+			if(visited[nodes.find(adj)] == false):
+				visited[nodes.find(adj)] = true
+				queue.push_back(adj)
+	
+	return false #path to target not found
+
 #delete all stored nodes in graph
 func deleteNodes() -> void:
 	for node : MyGraphNode in nodes:
@@ -141,8 +217,11 @@ func printNodes() -> void:
 	return
 
 func _draw() -> void:
+	var posA : Vector2
+	var posB : Vector2
 	for i in range(visibleEdges.size()):
-		draw_line(visibleEdges[i][0][0].position, visibleEdges[i][0][1].position,
-		Color.GRAY , nodeRadius / 4.0)
+		posA = visibleEdges[i][0].position
+		posB = visibleEdges[i][1].position
+		draw_line(posA, posB, Color.GRAY, maxf(0.05, nodeRadius / 4.0))
 		
 	return

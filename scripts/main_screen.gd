@@ -13,16 +13,15 @@ extends Node2D
  
 #var declaration
 @export var roomCount : int = 10 ##number of rooms generated, max 100
-@onready var radius : float = maxf(2.0, minf(map_div_width, map_div_height) / (roomCount * 2))
+@onready var maxRooms : int = 100
 
 func _ready() -> void:
 	background.size = DisplayServer.window_get_size()
 	ui_box.position.y = ui_div_height
 	
-	graph_handler.nodeCount = mini(roomCount, 100)
+	graph_handler.nodeCount = mini(roomCount, maxRooms)
 	graph_handler.map_width = map_div_width
 	graph_handler.map_height = map_div_height   
-	graph_handler.nodeRadius = radius   
 	graph_handler.newMap()
 	return
 
@@ -36,6 +35,6 @@ func _on_button_button_up() -> void:
 	graph_handler.deleteNodes()
 	graph_handler.newMap()
 
-func _on_line_edit_text_submitted(new_text: String) -> void:
-	graph_handler.nodeCount = mini(maxi(new_text.to_int(), 1), 100)
+func _on_line_edit_focus_exited() -> void:
+	graph_handler.nodeCount = mini(maxi(line_edit.text.to_int(), 1), maxRooms)
 	line_edit.text = str(graph_handler.nodeCount)

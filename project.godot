@@ -27,6 +27,7 @@ gdscript/warnings/unsafe_call_argument=1
 
 window/size/viewport_width=540
 window/size/viewport_height=960
+window/handheld/orientation=1
 
 [input]
 
@@ -41,3 +42,4 @@ new_map={
 [rendering]
 
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

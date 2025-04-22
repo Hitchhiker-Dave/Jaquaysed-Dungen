@@ -39,5 +39,5 @@ placeholder_text = "10"
 layout_mode = 2
 text = "New Map"
 
-[connection signal="text_submitted" from="UI_Box/HBoxContainer/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="focus_exited" from="UI_Box/HBoxContainer/LineEdit" to="." method="_on_line_edit_focus_exited"]
 [connection signal="button_up" from="UI_Box/HBoxContainer/Button" to="." method="_on_button_button_up"]
