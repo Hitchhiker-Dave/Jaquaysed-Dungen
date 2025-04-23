@@ -3,26 +3,29 @@ extends Node2D
 #get children/components
 @onready var background: ColorRect = $Background
 @onready var graph_handler: GraphManager = %GraphHandler
-@onready var ui_box: CenterContainer = $UI_Box
-@onready var line_edit: LineEdit = $UI_Box/HBoxContainer/LineEdit
+@onready var line_edit: LineEdit = %LineEdit
+@onready var main_container: MarginContainer = $MainContainer
 
-#temp vars until I set up the flexbox enviroment for Graph Handler
-@onready var map_div_width : float = DisplayServer.window_get_size().x 
-@onready var map_div_height : float = DisplayServer.window_get_size().y * (3.0/4.0)
-@onready var ui_div_height : float = DisplayServer.window_get_size().y * (7.0/8.0)
- 
 #var declaration
 @export var roomCount : int = 10 ##number of rooms generated, max 100
 @onready var maxRooms : int = 100
 
 func _ready() -> void:
+	#set background and main ui size
+	main_container.size = DisplayServer.window_get_size()
 	background.size = DisplayServer.window_get_size()
-	ui_box.position.y = ui_div_height
 	
+	#set up manual ui padding
+	var hpad : int = mini(DisplayServer.window_get_size().x, 10)
+	var vpad : int = mini(DisplayServer.window_get_size().y, 20)
+	
+	main_container.add_theme_constant_override("margin_top", vpad)
+	main_container.add_theme_constant_override("margin_bottom", vpad)
+	main_container.add_theme_constant_override("margin_left", hpad)
+	main_container.add_theme_constant_override("margin_right", hpad)
+	
+	#set up graph handler
 	graph_handler.nodeCount = mini(roomCount, maxRooms)
-	graph_handler.map_width = map_div_width
-	graph_handler.map_height = map_div_height   
-	graph_handler.newMap()
 	return
 
 func _process(_delta: float) -> void:

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dgqjqol5b7rd1"]
+[gd_scene load_steps=4 format=3 uid="uid://dgqjqol5b7rd1"]
 
 [ext_resource type="PackedScene" uid="uid://cc3xj2oqfyxui" path="res://objects/graph_handler.tscn" id="1_j6ixq"]
 [ext_resource type="Script" uid="uid://dl2ux2vs3btvs" path="res://scripts/main_screen.gd" id="1_ton5t"]
+[ext_resource type="Theme" uid="uid://crli0p2ornsts" path="res://themes/MainUI.tres" id="2_no7ry"]
 
 [node name="MainScreen" type="Node2D"]
 script = ExtResource("1_ton5t")
@@ -11,33 +12,57 @@ offset_right = 1136.0
 offset_bottom = 1079.0
 color = Color(0, 0, 0, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-size_flags_horizontal = 6
-size_flags_vertical = 6
+[node name="MainContainer" type="MarginContainer" parent="."]
+offset_right = 611.0
+offset_bottom = 957.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 20
 
-[node name="GraphHandler" parent="VBoxContainer" instance=ExtResource("1_j6ixq")]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+
+[node name="UI_Box" type="CenterContainer" parent="MainContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/VBoxContainer/UI_Box"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("2_no7ry")
+
+[node name="LineEdit" type="LineEdit" parent="MainContainer/VBoxContainer/UI_Box/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+placeholder_text = "10"
+
+[node name="CursedSpacer" type="Label" parent="MainContainer/VBoxContainer/UI_Box/HBoxContainer"]
+layout_mode = 2
+text = "  "
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MainContainer/VBoxContainer/UI_Box/HBoxContainer"]
+layout_mode = 2
+text = "New Map"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GraphContainer" type="MarginContainer" parent="MainContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="GraphHandler" parent="MainContainer/VBoxContainer/HBoxContainer/GraphContainer" instance=ExtResource("1_j6ixq")]
 unique_name_in_owner = true
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="UI_Box" type="CenterContainer" parent="."]
-offset_right = 540.0
-offset_bottom = 31.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI_Box"]
-layout_mode = 2
-
-[node name="LineEdit" type="LineEdit" parent="UI_Box/HBoxContainer"]
-layout_mode = 2
-placeholder_text = "10"
-
-[node name="Button" type="Button" parent="UI_Box/HBoxContainer"]
-layout_mode = 2
-text = "New Map"
-
-[connection signal="focus_exited" from="UI_Box/HBoxContainer/LineEdit" to="." method="_on_line_edit_focus_exited"]
-[connection signal="button_up" from="UI_Box/HBoxContainer/Button" to="." method="_on_button_button_up"]
+[connection signal="focus_exited" from="MainContainer/VBoxContainer/UI_Box/HBoxContainer/LineEdit" to="." method="_on_line_edit_focus_exited"]
+[connection signal="button_up" from="MainContainer/VBoxContainer/UI_Box/HBoxContainer/Button" to="." method="_on_button_button_up"]

@@ -7,8 +7,6 @@ var visibleEdges : Array = []
 
 #testing/temp var declaration
 @onready var nodeCount : int = 10
-@onready var map_width : float 
-@onready var map_height : float
 @onready var nodeRadius : float = 10.0
 @onready var minRadius : float = 8.0
 
@@ -32,18 +30,23 @@ func addNode(x : float, y : float) -> void:
 ##place nodeCount nodes onto screen
 func generateNodes(coords : Array, width : float, height : float) -> void:
 	#print("Generating New Nodes")
+	var min_width : float = get_parent().global_position.x
+	var min_height : float = get_parent().global_position.y
 	var x : float = 0
 	var y : float = 0
 	var padding : float = nodeRadius 
+	
 	for i in nodeCount:    
 		#print("Coords[", i, "]: ", coords[i])
-		x = min(coords[i][0] * width + padding + randf_range(-1 * width / 4.0, width / 4.0), 
-			width * nodeCount - (padding / 2.0))
-		if x < (padding / 2.0): x = padding / 2.0
+		x = min((coords[i][0] * width) + min_width + padding 
+			+ randf_range((-1 * width / 4.0), (width / 4.0)), 
+			(width * nodeCount) + min_width - (padding))
+		if x < padding + min_width: x = padding + min_width
 		
-		y = min(coords[i][1] * height + padding + randf_range(-1 * height / 4.0, height / 4.0),
-			height * nodeCount - (padding / 2.0))
-		if y < (padding / 2.0): y = padding / 2.0
+		y = min((coords[i][1] * height) + min_height + padding 
+			+ randf_range((-1 * height / 4.0), (height / 4.0)),
+			(height * nodeCount) + min_height - (padding))
+		if y < padding + (min_height * 1.5): y = padding + (min_height * 1.1)
 		
 		addNode(x, y)
 	return
@@ -53,10 +56,11 @@ func generateNodes(coords : Array, width : float, height : float) -> void:
 #range for placing a node. make sure to pop the used coords to prevent potential overlap 
 func newMap() -> void:
 	#var declaration
+	var map_size : Vector2 = (get_parent_area_size())
 	var grid_coords : Array = []
-	var grid_width : float = map_width / nodeCount
-	var grid_height : float = map_height / nodeCount
-	nodeRadius = maxf(minRadius, minf(map_width, map_height) / (nodeCount * 2))
+	var grid_width : float = map_size[0] / nodeCount
+	var grid_height : float = map_size[1] / nodeCount
+	nodeRadius = maxf(minRadius, minf(map_size[0], map_size[1]) / (nodeCount * 2))
 	
 	#initialize valid grid coords
 	for y in range(nodeCount):
