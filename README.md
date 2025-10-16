@@ -1,4 +1,4 @@
 # Project Info
 TBA
 
-Play the Game Here: mrhitchhikerdave.itch.io/sokoban-crawl
+[Check out the tool here!](https://mrhitchhikerdave.itch.io/dungen)
